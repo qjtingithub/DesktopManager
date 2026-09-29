@@ -1,0 +1,23 @@
+# 主 Agent 使用 GPT-5.6 Sol
+model = "gpt-5.6-sol"
+
+# 主 Agent 负责架构、规划、审查和最终决策，
+# 因此建议使用较高推理强度。
+model_reasoning_effort = "max"
+
+
+[agents]
+
+# 启用多 Agent 功能。
+enabled = true
+
+# 最多同时运行 3 个子 Agent。
+# 对当前这种中型桌面项目，先不要开太多。
+max_concurrent_threads_per_session = 3
+
+# 如果主 Agent 创建普通子 Agent，
+# 默认使用 GPT-5.6 Luna。
+default_subagent_model = "gpt-5.6-luna"
+
+# Luna 做代码实现时建议不要设得太低。
+default_subagent_reasoning_effort = "max"

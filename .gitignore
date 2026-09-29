@@ -1,0 +1,30 @@
+# .NET build outputs
+**/[Bb]in/
+**/[Oo]bj/
+[Aa]rtifacts/
+[Tt]est[Rr]esults/
+*.coverage
+*.coveragexml
+
+# Local SDK and package caches used by this repository
+.dotnet-cli-home/
+.nuget/
+
+# Visual Studio / JetBrains / VS Code user state
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Runtime recovery and temporary files
+desktop-icon-recovery.json
+desktop-icon-recovery.json.tmp-*
+*.log
+
+# Windows metadata
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
