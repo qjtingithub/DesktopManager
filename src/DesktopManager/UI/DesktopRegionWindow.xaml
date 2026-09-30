@@ -2,45 +2,117 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Desktop region"
-        Width="330"
-        Height="190"
-        MinWidth="220"
-        MinHeight="120"
+        Width="430"
+        Height="230"
+        MinWidth="390"
+        MinHeight="150"
         AllowsTransparency="True"
         Background="Transparent"
         WindowStyle="None"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         ShowActivated="False"
+        FontFamily="Segoe UI"
         SnapsToDevicePixels="True"
         UseLayoutRounding="True">
     <Window.Resources>
+        <Style x:Key="OverlayButton" TargetType="Button">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Padding" Value="10,3" />
+            <Setter Property="Background" Value="#26FFFFFF" />
+            <Setter Property="BorderBrush" Value="#55FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#42FFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.72" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="White" />
+                                <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="ColorPresetButton" TargetType="Button">
             <Setter Property="Width" Value="20" />
             <Setter Property="Height" Value="20" />
-            <Setter Property="Margin" Value="2,0,0,0" />
+            <Setter Property="Margin" Value="3,0,0,0" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#D9FFFFFF" />
-            <Setter Property="Focusable" Value="False" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="#BFFFFFFF" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Swatch"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Swatch" Property="BorderBrush" Value="White" />
+                                <Setter TargetName="Swatch" Property="BorderThickness" Value="3" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Swatch" Property="Opacity" Value="0.68" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Swatch" Property="BorderBrush" Value="White" />
+                                <Setter TargetName="Swatch" Property="BorderThickness" Value="3" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ToolTip">
+            <Setter Property="Padding" Value="9,6" />
+            <Setter Property="Background" Value="#F21E293B" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="11" />
         </Style>
     </Window.Resources>
 
-    <Grid x:Name="Root" Margin="2">
+    <Grid x:Name="Root" Margin="3">
         <Border x:Name="Surface"
                 BorderThickness="2"
-                CornerRadius="8"
+                CornerRadius="13"
                 SnapsToDevicePixels="True">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="34" />
+                    <RowDefinition Height="46" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Border x:Name="TitleBar"
                         Grid.Row="0"
-                        Padding="10,0,8,0"
-                        CornerRadius="6,6,0,0"
+                        Padding="13,0,10,0"
+                        CornerRadius="11,11,0,0"
                         MouseLeftButtonDown="TitleBar_OnMouseLeftButtonDown">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -48,103 +120,178 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="TitleEditor"
-                                 Grid.Column="0"
-                                 VerticalContentAlignment="Center"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 Foreground="White"
-                                 FontSize="14"
-                                 FontWeight="SemiBold"
-                                 Padding="0"
-                                 TextChanged="TitleEditor_OnTextChanged"
-                                 LostFocus="TitleEditor_OnLostFocus" />
+                        <Grid Grid.Column="0" Margin="0,0,10,0">
+                            <TextBox x:Name="TitleEditor"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     CaretBrush="White"
+                                     Foreground="White"
+                                     FontSize="15"
+                                     FontWeight="SemiBold"
+                                     Padding="0"
+                                     SelectionBrush="#66FFFFFF"
+                                     TextChanged="TitleEditor_OnTextChanged"
+                                     LostFocus="TitleEditor_OnLostFocus" />
 
-                        <TextBlock x:Name="TitleText"
-                                   Grid.Column="0"
-                                   VerticalAlignment="Center"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   TextTrimming="CharacterEllipsis" />
+                            <TextBlock x:Name="TitleText"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis" />
+                        </Grid>
 
                         <StackPanel x:Name="EditControls"
                                     Grid.Column="1"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center">
-                            <TextBlock VerticalAlignment="Center"
+                            <TextBlock Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
                                        Foreground="#E6FFFFFF"
-                                       FontSize="11"
+                                       FontSize="10"
                                        Text="透明度" />
                             <Slider x:Name="OpacitySlider"
-                                    Width="66"
-                                    Margin="4,0,2,0"
+                                    Width="68"
+                                    Margin="0,0,4,0"
+                                    VerticalAlignment="Center"
+                                    IsMoveToPointEnabled="True"
                                     Minimum="0.12"
                                     Maximum="0.85"
                                     SmallChange="0.02"
                                     LargeChange="0.1"
+                                    ToolTip="调整分区背景透明度"
                                     ValueChanged="OpacitySlider_OnValueChanged" />
                             <TextBlock x:Name="OpacityValueText"
-                                       Width="30"
+                                       Width="32"
+                                       Margin="0,0,3,0"
                                        VerticalAlignment="Center"
-                                       Foreground="#E6FFFFFF"
+                                       Foreground="White"
                                        FontSize="10"
+                                       FontWeight="SemiBold"
                                        TextAlignment="Right" />
                             <Button Style="{StaticResource ColorPresetButton}"
                                     Background="#FF2F80ED"
                                     Tag="#2F80ED"
+                                    AutomationProperties.Name="蓝色分区"
                                     ToolTip="蓝色"
                                     Click="ColorPreset_OnClick" />
                             <Button Style="{StaticResource ColorPresetButton}"
                                     Background="#FF27AE60"
                                     Tag="#27AE60"
+                                    AutomationProperties.Name="绿色分区"
                                     ToolTip="绿色"
                                     Click="ColorPreset_OnClick" />
                             <Button Style="{StaticResource ColorPresetButton}"
-                                    Background="#FFF2994A"
-                                    Tag="#F2994A"
+                                    Background="#FFD97706"
+                                    Tag="#D97706"
+                                    AutomationProperties.Name="橙色分区"
                                     ToolTip="橙色"
                                     Click="ColorPreset_OnClick" />
                             <Button Style="{StaticResource ColorPresetButton}"
                                     Background="#FF9B51E0"
                                     Tag="#9B51E0"
+                                    AutomationProperties.Name="紫色分区"
                                     ToolTip="紫色"
                                     Click="ColorPreset_OnClick" />
-                            <Button Width="38"
-                                    Height="22"
-                                    Margin="4,0,0,0"
-                                    Padding="0"
+                            <Button Width="44"
+                                    Margin="7,0,0,0"
+                                    Style="{StaticResource OverlayButton}"
                                     Content="锁定"
                                     ToolTip="锁定分区（Ctrl+Alt+E 恢复编辑）"
                                     Click="LockButton_OnClick" />
                         </StackPanel>
 
-                        <TextBlock x:Name="LockedHint"
-                                   Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Foreground="#E6FFFFFF"
-                                   FontSize="10"
-                                   Text="已锁定 · Ctrl+Alt+E 编辑"
-                                   Visibility="Collapsed" />
+                        <Border x:Name="LockedHint"
+                                Grid.Column="1"
+                                Padding="10,5"
+                                VerticalAlignment="Center"
+                                Background="#29FFFFFF"
+                                BorderBrush="#4DFFFFFF"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="6"
+                                         Height="6"
+                                         Margin="0,0,7,0"
+                                         VerticalAlignment="Center"
+                                         Fill="#FFFFFFFF" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Foreground="White"
+                                           FontSize="10"
+                                           FontWeight="SemiBold"
+                                           Text="已锁定 · Ctrl+Alt+E 编辑" />
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="1" Margin="12,8,12,12">
-                    <TextBlock Foreground="#CCFFFFFF"
-                               FontSize="12"
-                               Text="Demo 分区&#x0a;图标成员由 Shell 集成层提供"
-                               TextWrapping="Wrap" />
-                </Grid>
+                <Grid Grid.Row="1">
+                    <Border Margin="16,14,16,46"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="#B30F172A"
+                            BorderBrush="#4DFFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="9">
+                        <Grid Margin="13,11">
+                            <StackPanel>
+                                <Border HorizontalAlignment="Left"
+                                        Padding="8,3"
+                                        Background="#2EFFFFFF"
+                                        CornerRadius="7">
+                                    <TextBlock Foreground="#EFFFFFFF"
+                                               FontSize="9"
+                                               FontWeight="SemiBold"
+                                               Text="DESKTOP GROUP" />
+                                </Border>
+                                <TextBlock Margin="0,8,0,0"
+                                           Foreground="White"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Text="成员图标将随分区同步移动" />
+                                <TextBlock Margin="0,4,0,0"
+                                           Foreground="#D6FFFFFF"
+                                           FontSize="10"
+                                           Text="仅改变图标坐标，不移动桌面文件。" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
 
-                <Thumb x:Name="ResizeThumb"
-                       Grid.Row="1"
-                       Width="18"
-                       Height="18"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       Margin="0,0,2,2"
-                       Cursor="SizeNWSE"
-                       DragDelta="ResizeThumb_OnDragDelta" />
+                    <Border Margin="18,0,0,12"
+                            Padding="8,4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Background="#26FFFFFF"
+                            CornerRadius="7"
+                            Visibility="{Binding Visibility, ElementName=ResizeThumb}">
+                        <TextBlock Foreground="#E6FFFFFF"
+                                   FontSize="9"
+                                   Text="编辑模式 · 拖动标题栏移动 · 右下角缩放" />
+                    </Border>
+
+                    <Thumb x:Name="ResizeThumb"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,8,8"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom"
+                           Cursor="SizeNWSE"
+                           DragDelta="ResizeThumb_OnDragDelta">
+                        <Thumb.Template>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Grid Background="Transparent">
+                                    <Path Data="M 5,19 L 19,5 M 11,19 L 19,11 M 17,19 L 19,17"
+                                          Stroke="#EEFFFFFF"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          StrokeThickness="1.7" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                    </Thumb>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

@@ -2,111 +2,478 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="DesktopManager 可行性 Demo"
-        Width="720"
-        Height="760"
-        MinWidth="620"
-        MinHeight="650"
+        Width="900"
+        Height="820"
+        MinWidth="720"
+        MinHeight="660"
         WindowStartupLocation="CenterScreen"
+        Background="#FFF4F7FB"
+        FontFamily="Segoe UI"
+        FontSize="13"
+        Foreground="#FF172033"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True"
         Closing="MainWindow_OnClosing">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="12,7" />
-            <Setter Property="Margin" Value="0,0,8,8" />
-            <Setter Property="MinWidth" Value="110" />
-        </Style>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FF172033" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#FF64748B" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#FFE2E8F0" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#FF2563EB" />
+
         <Style TargetType="TextBlock">
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
+
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="20" />
+        </Style>
+
+        <Style x:Key="StepBadge" TargetType="Border">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Background" Value="#FFEFF6FF" />
+            <Setter Property="BorderBrush" Value="#FFBFDBFE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+        </Style>
+
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="MinHeight" Value="40" />
+            <Setter Property="MinWidth" Value="124" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Margin" Value="0,0,10,10" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#FFD5DDEA" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.72" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#FF60A5FA" />
+                                <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.42" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#FFF8FAFC" />
+        </Style>
+
+        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#FFFFF7ED" />
+            <Setter Property="BorderBrush" Value="#FFFDBA74" />
+            <Setter Property="Foreground" Value="#FFC2410C" />
+        </Style>
+
+        <Style x:Key="ReadOnlyPathTextBox" TargetType="TextBox">
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="Background" Value="#FFF8FAFC" />
+            <Setter Property="BorderBrush" Value="#FFDCE3EE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="#FF334155" />
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="TextBoxBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9">
+                            <ScrollViewer x:Name="PART_ContentHost" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TextBoxBorder" Property="BorderBrush" Value="#FF60A5FA" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconListItem" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="Margin" Value="0,0,0,3" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#FF334155" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="ItemBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="7">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#FFF1F5F9" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#FFDBEAFE" />
+                                <Setter Property="Foreground" Value="#FF1D4ED8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <Grid Background="#FFF4F6F9">
+    <Grid Background="#FFF4F7FB">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#FF1F2937" Padding="24,20">
-            <StackPanel>
-                <TextBlock Foreground="White"
-                           FontSize="24"
+        <Border Grid.Row="0"
+                Padding="30,24"
+                Background="#FF111827"
+                BorderBrush="#FF243047"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="34"
+                                Height="34"
+                                Margin="0,0,12,0"
+                                Background="#FF2563EB"
+                                CornerRadius="10">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       Text="D" />
+                        </Border>
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="White"
+                                   FontSize="26"
+                                   FontWeight="SemiBold"
+                                   Text="DesktopManager" />
+                        <Border Margin="12,4,0,4"
+                                Padding="9,3"
+                                Background="#FF243047"
+                                CornerRadius="8">
+                            <TextBlock Foreground="#FFBFDBFE"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Text="可行性 Demo" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Margin="46,7,0,0"
+                               Foreground="#FFB8C2D4"
+                               FontSize="13"
+                               Text="让真实桌面图标与半透明分区一起移动，并始终保留安全恢复路径。" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Border Padding="12,6"
+                            Background="#FF172F2A"
+                            BorderBrush="#FF215648"
+                            BorderThickness="1"
+                            CornerRadius="10">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="7" Height="7" Margin="0,0,7,0" Fill="#FF34D399" />
+                            <TextBlock Foreground="#FFA7F3D0" FontSize="11" Text="本地运行" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Margin="0,7,0,0"
+                               HorizontalAlignment="Right"
+                               Foreground="#FF8491A6"
+                               FontSize="10"
+                               Text="Windows 11 · 主显示器" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="28,24,28,28">
+                <Border x:Name="StatusBorder"
+                        Padding="16,14"
+                        Background="#FFEFF6FF"
+                        BorderBrush="#FF93C5FD"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="26"
+                                Height="26"
+                                Margin="0,0,11,0"
+                                VerticalAlignment="Top"
+                                Background="#FFFFFFFF"
+                                CornerRadius="13">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="#FF2563EB"
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Text="i" />
+                        </Border>
+                        <TextBlock x:Name="StatusText"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Foreground="#FF1E3A8A"
+                                   FontWeight="SemiBold"
+                                   LineHeight="20"
+                                   Text="正在连接 Windows 桌面……" />
+                    </Grid>
+                </Border>
+
+                <TextBlock Margin="2,24,0,4"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontSize="20"
                            FontWeight="SemiBold"
-                           Text="DesktopManager 可行性 Demo" />
-                <TextBlock Margin="0,6,0,0"
-                           Foreground="#FFD1D5DB"
-                           Text="验证真实桌面图标枚举、半透明分区，以及拖动分区时同步移动一个指定测试图标。" />
+                           Text="桌面整理实验室" />
+                <TextBlock Margin="2,0,0,15"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Text="先连接 Explorer，再用唯一的临时快捷方式验证分区捕获、同步移动与恢复。" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.95*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="1.05*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource SectionCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadge}">
+                                    <TextBlock HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#FF2563EB"
+                                               FontWeight="Bold"
+                                               Text="1" />
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="连接桌面与分区" />
+                                    <TextBlock Margin="0,3,0,0"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               Text="刷新真实桌面图标，然后打开分区。" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <WrapPanel Margin="0,18,0,0">
+                                <Button Style="{StaticResource SecondaryButton}"
+                                        Content="刷新桌面图标"
+                                        Click="RefreshButton_OnClick" />
+                                <Button Style="{StaticResource PrimaryButton}"
+                                        Content="打开 / 显示分区"
+                                        Click="OpenRegionButton_OnClick" />
+                                <Button Style="{StaticResource SecondaryButton}"
+                                        Content="定位到测试图标"
+                                        Click="LocateRegionButton_OnClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource SectionCard}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadge}">
+                                    <TextBlock HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#FF2563EB"
+                                               FontWeight="Bold"
+                                               Text="2" />
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Text="捕获并安全恢复" />
+                                    <TextBlock Margin="0,3,0,0"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               Text="只允许操作固定名称的测试快捷方式。" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Margin="0,16,0,10"
+                                    Padding="11,9"
+                                    Background="#FFFFFBEB"
+                                    BorderBrush="#FFFDE68A"
+                                    BorderThickness="1"
+                                    CornerRadius="9">
+                                <TextBlock Foreground="#FF92400E"
+                                           FontSize="11"
+                                           LineHeight="17"
+                                           Text="安全边界：不会移动、复制、删除或重命名真实桌面文件。" />
+                            </Border>
+
+                            <TextBox x:Name="TestShortcutPathTextBox"
+                                     Margin="0,0,0,12"
+                                     IsReadOnly="True"
+                                     Style="{StaticResource ReadOnlyPathTextBox}" />
+                            <WrapPanel>
+                                <Button x:Name="CaptureButton"
+                                        MinWidth="168"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Content="捕获方框内的测试图标"
+                                        Click="CaptureButton_OnClick" />
+                                <Button x:Name="RestoreButton"
+                                        MinWidth="156"
+                                        Style="{StaticResource RestoreButtonStyle}"
+                                        Content="恢复测试图标原位置"
+                                        Click="RestoreButton_OnClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Margin="0,16,0,0" Style="{StaticResource SectionCard}">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Text="Explorer 当前返回的桌面图标" />
+                                <TextBlock Margin="0,4,0,0"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontSize="12"
+                                           Text="坐标为相对主显示器原点的物理像素；列表只读。" />
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Padding="9,4"
+                                    VerticalAlignment="Top"
+                                    Background="#FFF1F5F9"
+                                    CornerRadius="8">
+                                <TextBlock Foreground="#FF64748B"
+                                           FontSize="10"
+                                           FontWeight="SemiBold"
+                                           Text="SHELL 只读视图" />
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#FFF8FAFC"
+                                BorderBrush="#FFE2E8F0"
+                                BorderThickness="1"
+                                CornerRadius="10">
+                            <ListBox x:Name="DesktopIconsList"
+                                     Height="245"
+                                     Padding="6"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     FontFamily="Cascadia Mono, Consolas"
+                                     FontSize="12"
+                                     ItemContainerStyle="{StaticResource IconListItem}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   TextWrapping="NoWrap" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </DockPanel>
+                </Border>
             </StackPanel>
-        </Border>
+        </ScrollViewer>
 
-        <Border x:Name="StatusBorder"
-                Grid.Row="1"
-                Margin="20,16,20,0"
-                Padding="12"
-                Background="#FFE5EEF9"
-                BorderBrush="#FF7AA7D9"
-                BorderThickness="1"
-                CornerRadius="5">
-            <TextBlock x:Name="StatusText"
-                       Foreground="#FF173B63"
-                       Text="正在连接 Windows 桌面……" />
-        </Border>
-
-        <StackPanel Grid.Row="2" Margin="20,18,20,8">
-            <TextBlock FontSize="16" FontWeight="SemiBold" Text="1. Shell 与分区窗口" />
-            <WrapPanel Margin="0,10,0,0">
-                <Button Content="刷新桌面图标" Click="RefreshButton_OnClick" />
-                <Button Content="打开 / 显示分区" Click="OpenRegionButton_OnClick" />
-                <Button Content="定位到测试图标" Click="LocateRegionButton_OnClick" />
-            </WrapPanel>
-
-            <TextBlock Margin="0,8,0,3"
-                       FontSize="16"
-                       FontWeight="SemiBold"
-                       Text="2. 仅限临时测试快捷方式" />
-            <TextBlock Foreground="#FF596273"
-                       Text="安全边界：Demo 只接受桌面上的 DesktopManager.FeasibilityTest.lnk，不会移动、复制、删除或重命名真实文件。" />
-            <TextBox x:Name="TestShortcutPathTextBox"
-                     Margin="0,8,0,10"
-                     Padding="8,6"
-                     IsReadOnly="True" />
-            <WrapPanel>
-                <Button x:Name="CaptureButton"
-                        MinWidth="170"
-                        Content="捕获方框内的测试图标"
-                        Click="CaptureButton_OnClick" />
-                <Button x:Name="RestoreButton"
-                        MinWidth="140"
-                        Content="恢复测试图标原位置"
-                        Click="RestoreButton_OnClick" />
-            </WrapPanel>
-        </StackPanel>
-
-        <Border Grid.Row="3"
-                Margin="20,0,20,12"
-                Padding="12"
-                Background="White"
-                BorderBrush="#FFD4D9E1"
-                BorderThickness="1"
-                CornerRadius="5">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top"
-                           Margin="0,0,0,8"
-                           FontWeight="SemiBold"
-                           Text="Explorer 当前返回的桌面图标" />
-                <ListBox x:Name="DesktopIconsList"
-                         BorderThickness="0"
-                         FontFamily="Consolas"
-                         FontSize="12" />
-            </DockPanel>
-        </Border>
-
-        <Border Grid.Row="4" Background="#FFE9EDF2" Padding="20,12">
-            <TextBlock Foreground="#FF4B5563">
-                <Run FontWeight="SemiBold" Text="操作顺序：" />
-                <Run Text="打开分区 → 将测试图标拖入分区（锁定后可穿透），或用“定位”按钮 → Ctrl+Alt+E 回到编辑模式 → 捕获 → 拖动分区。关闭分区或主窗口时会尝试恢复原坐标。" />
-            </TextBlock>
+        <Border Grid.Row="2"
+                Padding="28,14"
+                Background="#FFFFFFFF"
+                BorderBrush="#FFE2E8F0"
+                BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Width="25"
+                        Height="25"
+                        Margin="0,0,10,0"
+                        Background="#FFEFF6FF"
+                        CornerRadius="13">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="#FF2563EB"
+                               FontWeight="Bold"
+                               Text="?" />
+                </Border>
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Foreground="#FF475569"
+                           FontSize="12">
+                    <Run FontWeight="SemiBold" Text="推荐顺序：" />
+                    <Run Text="打开分区 → 放入并捕获测试图标 → 拖动分区 → 恢复原位置。" />
+                </TextBlock>
+                <TextBlock Grid.Column="2"
+                           Margin="16,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="#FF64748B"
+                           FontSize="11"
+                           Text="Ctrl+Alt+E  返回编辑模式" />
+            </Grid>
         </Border>
     </Grid>
 </Window>

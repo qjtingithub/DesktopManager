@@ -424,10 +424,22 @@ public partial class MainWindow : Window
         StatusText.Text = message;
         (StatusBorder.Background, StatusBorder.BorderBrush, StatusText.Foreground) = kind switch
         {
-            StatusKind.Success => (Brushes.Honeydew, Brushes.SeaGreen, Brushes.DarkGreen),
-            StatusKind.Warning => (Brushes.LemonChiffon, Brushes.Goldenrod, Brushes.DarkGoldenrod),
-            StatusKind.Error => (Brushes.MistyRose, Brushes.IndianRed, Brushes.DarkRed),
-            _ => (new SolidColorBrush(Color.FromRgb(229, 238, 249)), Brushes.SteelBlue, Brushes.MidnightBlue)
+            StatusKind.Success => (
+                new SolidColorBrush(Color.FromRgb(236, 253, 245)),
+                new SolidColorBrush(Color.FromRgb(110, 231, 183)),
+                new SolidColorBrush(Color.FromRgb(6, 95, 70))),
+            StatusKind.Warning => (
+                new SolidColorBrush(Color.FromRgb(255, 251, 235)),
+                new SolidColorBrush(Color.FromRgb(252, 211, 77)),
+                new SolidColorBrush(Color.FromRgb(146, 64, 14))),
+            StatusKind.Error => (
+                new SolidColorBrush(Color.FromRgb(254, 242, 242)),
+                new SolidColorBrush(Color.FromRgb(252, 165, 165)),
+                new SolidColorBrush(Color.FromRgb(153, 27, 27))),
+            _ => (
+                new SolidColorBrush(Color.FromRgb(239, 246, 255)),
+                new SolidColorBrush(Color.FromRgb(147, 197, 253)),
+                new SolidColorBrush(Color.FromRgb(30, 58, 138)))
         };
     }
 
