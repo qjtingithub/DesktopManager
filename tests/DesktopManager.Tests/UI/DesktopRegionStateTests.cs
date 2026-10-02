@@ -38,4 +38,12 @@ public sealed class DesktopRegionStateTests
         state.ToggleMode();
         Assert.Equal(DesktopRegionMode.Editing, state.Mode);
     }
+
+    [Fact]
+    public void ConstructorCanRestoreLockedMode()
+    {
+        DesktopRegionState state = new(mode: DesktopRegionMode.Locked);
+
+        Assert.Equal(DesktopRegionMode.Locked, state.Mode);
+    }
 }

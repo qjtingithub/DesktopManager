@@ -38,21 +38,25 @@ public partial class DesktopRegionWindow : Window
     private const int MaNoActivate = 3;
 
     private readonly DesktopRegionState _state;
+    private readonly bool _registerEditHotKey;
     private IntPtr _windowHandle;
     private HwndSource? _hwndSource;
     private bool _isUpdatingVisuals = true;
     private bool _hasLastScreenBounds;
     private ScreenRect _lastScreenBounds;
     private bool _hotKeyRegistered;
+    private string _lastPublishedName;
 
     public DesktopRegionWindow()
-        : this(new DesktopRegionState())
+        : this(new DesktopRegionState(), registerEditHotKey: true)
     {
     }
 
-    public DesktopRegionWindow(DesktopRegionState state)
+    public DesktopRegionWindow(DesktopRegionState state, bool registerEditHotKey = true)
     {
         _state = state ?? throw new ArgumentNullException(nameof(state));
+        _registerEditHotKey = registerEditHotKey;
+        _lastPublishedName = _state.Name;
 
         InitializeComponent();
         SourceInitialized += OnSourceInitialized;
@@ -72,6 +76,8 @@ public partial class DesktopRegionWindow : Window
 
     public event EventHandler<DesktopRegionBoundsChangedEventArgs>? ScreenBoundsChanged;
 
+    public event EventHandler? RegionStateChanged;
+
     public void SetMode(DesktopRegionMode mode)
     {
         if (_state.Mode == mode)
@@ -81,6 +87,7 @@ public partial class DesktopRegionWindow : Window
 
         _state.SetMode(mode);
         ApplyStateToVisuals();
+        RaiseRegionStateChanged();
 
         if (mode == DesktopRegionMode.Editing && IsVisible)
         {
@@ -107,7 +114,7 @@ public partial class DesktopRegionWindow : Window
         _hwndSource = HwndSource.FromHwnd(_windowHandle);
         _hwndSource?.AddHook(WindowMessageHook);
 
-        _hotKeyRegistered = NativeMethods.RegisterHotKey(
+        _hotKeyRegistered = _registerEditHotKey && NativeMethods.RegisterHotKey(
             _windowHandle,
             EditHotKeyId,
             ModControl | ModAlt,
@@ -238,8 +245,15 @@ public partial class DesktopRegionWindow : Window
 
     private void TitleEditor_OnLostFocus(object sender, RoutedEventArgs e)
     {
+        string previousName = _lastPublishedName;
         _state.SetName(TitleEditor.Text);
         ApplyStateToVisuals();
+
+        if (!string.Equals(previousName, _state.Name, StringComparison.Ordinal))
+        {
+            _lastPublishedName = _state.Name;
+            RaiseRegionStateChanged();
+        }
     }
 
     private void OpacitySlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -249,8 +263,15 @@ public partial class DesktopRegionWindow : Window
             return;
         }
 
+        double previousOpacity = _state.BackgroundOpacity;
         _state.SetBackgroundOpacity(e.NewValue);
+        if (previousOpacity.Equals(_state.BackgroundOpacity))
+        {
+            return;
+        }
+
         ApplyStateToVisuals();
+        RaiseRegionStateChanged();
     }
 
     private void ColorPreset_OnClick(object sender, RoutedEventArgs e)
@@ -266,8 +287,14 @@ public partial class DesktopRegionWindow : Window
             return;
         }
 
+        if (_state.Color == color)
+        {
+            return;
+        }
+
         _state.SetColor(color);
         ApplyStateToVisuals();
+        RaiseRegionStateChanged();
     }
 
     private void LockButton_OnClick(object sender, RoutedEventArgs e) =>
@@ -348,6 +375,8 @@ public partial class DesktopRegionWindow : Window
 
     private static byte ToAlpha(double opacity) =>
         (byte)Math.Round(Math.Clamp(opacity, 0, 1) * byte.MaxValue, MidpointRounding.AwayFromZero);
+
+    private void RaiseRegionStateChanged() => RegionStateChanged?.Invoke(this, EventArgs.Empty);
 
     private static class NativeMethods
     {

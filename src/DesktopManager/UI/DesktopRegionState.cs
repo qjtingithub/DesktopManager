@@ -20,11 +20,13 @@ public sealed class DesktopRegionState
     public DesktopRegionState(
         string? name = null,
         Color? color = null,
-        double backgroundOpacity = 0.26)
+        double backgroundOpacity = 0.26,
+        DesktopRegionMode mode = DesktopRegionMode.Editing)
     {
         Name = NormalizeName(name);
         Color = color ?? Colors.DodgerBlue;
         BackgroundOpacity = ClampOpacity(backgroundOpacity);
+        Mode = mode;
     }
 
     public string Name { get; private set; }

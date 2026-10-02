@@ -286,7 +286,7 @@
                            Text="桌面整理实验室" />
                 <TextBlock Margin="2,0,0,15"
                            Foreground="{StaticResource TextSecondaryBrush}"
-                           Text="先连接 Explorer，再用唯一的临时快捷方式验证分区捕获、同步移动与恢复。" />
+                           Text="创建多个可持久化分区；真实图标写入仍通过专用临时快捷方式安全验证。" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -308,24 +308,45 @@
                                 <StackPanel>
                                     <TextBlock FontSize="16"
                                                FontWeight="SemiBold"
-                                               Text="连接桌面与分区" />
+                                               Text="管理桌面分区" />
                                     <TextBlock Margin="0,3,0,0"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
-                                               Text="刷新真实桌面图标，然后打开分区。" />
+                                               Text="新建、选择、编辑或删除本地分区。" />
                                 </StackPanel>
                             </StackPanel>
 
-                            <WrapPanel Margin="0,18,0,0">
-                                <Button Style="{StaticResource SecondaryButton}"
-                                        Content="刷新桌面图标"
-                                        Click="RefreshButton_OnClick" />
-                                <Button Style="{StaticResource PrimaryButton}"
-                                        Content="打开 / 显示分区"
-                                        Click="OpenRegionButton_OnClick" />
-                                <Button Style="{StaticResource SecondaryButton}"
-                                        Content="定位到测试图标"
-                                        Click="LocateRegionButton_OnClick" />
+                            <Border Margin="0,16,0,12"
+                                    Background="#FFF8FAFC"
+                                    BorderBrush="#FFE2E8F0"
+                                    BorderThickness="1"
+                                    CornerRadius="9">
+                                <ListBox x:Name="RegionSelector"
+                                         Height="88"
+                                         Padding="5"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         DisplayMemberPath="Name"
+                                         ItemContainerStyle="{StaticResource IconListItem}"
+                                         SelectedValuePath="Id"
+                                         SelectionChanged="RegionSelector_OnSelectionChanged"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            </Border>
+
+                            <WrapPanel>
+                                <Button x:Name="CreateRegionButton"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Content="新建分区"
+                                        Click="CreateRegionButton_OnClick" />
+                                <Button x:Name="EditAllRegionsButton"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Content="全部编辑"
+                                        Click="EditAllRegionsButton_OnClick" />
+                                <Button x:Name="DeleteRegionButton"
+                                        Style="{StaticResource RestoreButtonStyle}"
+                                        Content="删除所选"
+                                        Click="DeleteRegionButton_OnClick" />
                             </WrapPanel>
                         </StackPanel>
                     </Border>
@@ -343,11 +364,11 @@
                                 <StackPanel>
                                     <TextBlock FontSize="16"
                                                FontWeight="SemiBold"
-                                               Text="捕获并安全恢复" />
+                                               Text="测试图标安全验证" />
                                     <TextBlock Margin="0,3,0,0"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
-                                               Text="只允许操作固定名称的测试快捷方式。" />
+                                               Text="当前仍只操作固定名称的临时快捷方式。" />
                                 </StackPanel>
                             </StackPanel>
 
@@ -378,6 +399,10 @@
                                         Style="{StaticResource RestoreButtonStyle}"
                                         Content="恢复测试图标原位置"
                                         Click="RestoreButton_OnClick" />
+                                <Button x:Name="LocateRegionButton"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Content="定位到测试图标"
+                                        Click="LocateRegionButton_OnClick" />
                             </WrapPanel>
                         </StackPanel>
                     </Border>
@@ -399,16 +424,26 @@
                                            FontSize="12"
                                            Text="坐标为相对主显示器原点的物理像素；列表只读。" />
                             </StackPanel>
-                            <Border Grid.Column="1"
-                                    Padding="9,4"
-                                    VerticalAlignment="Top"
-                                    Background="#FFF1F5F9"
-                                    CornerRadius="8">
-                                <TextBlock Foreground="#FF64748B"
-                                           FontSize="10"
-                                           FontWeight="SemiBold"
-                                           Text="SHELL 只读视图" />
-                            </Border>
+                            <StackPanel Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                <Border Padding="9,4"
+                                        VerticalAlignment="Center"
+                                        Background="#FFF1F5F9"
+                                        CornerRadius="8">
+                                    <TextBlock Foreground="#FF64748B"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"
+                                               Text="SHELL 只读视图" />
+                                </Border>
+                                <Button MinWidth="88"
+                                        MinHeight="32"
+                                        Margin="9,0,0,0"
+                                        Padding="12,5"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Content="刷新列表"
+                                        Click="RefreshButton_OnClick" />
+                            </StackPanel>
                         </Grid>
 
                         <Border Background="#FFF8FAFC"
@@ -465,7 +500,7 @@
                            Foreground="#FF475569"
                            FontSize="12">
                     <Run FontWeight="SemiBold" Text="推荐顺序：" />
-                    <Run Text="打开分区 → 放入并捕获测试图标 → 拖动分区 → 恢复原位置。" />
+                    <Run Text="新建并选择分区 → 调整名称与位置 → 锁定；测试图标移动仍需单独捕获。" />
                 </TextBlock>
                 <TextBlock Grid.Column="2"
                            Margin="16,0,0,0"
